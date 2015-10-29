@@ -1,0 +1,230 @@
+<!doctype html>
+<html>
+	<head>
+
+		<title>Currency Converter</title>
+
+		<!-- Bootstrap-->
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+		<!-- jQuery library -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+		<!-- Latest compiled JavaScript -->
+		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+		
+		
+
+		<meta charset="utf-8">
+  		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+  		<!-- CSS Syles -->
+		<style>
+		.bg-1{ 
+			background-color: #FFFFFF; 
+			color:#FFFFFF;	
+		}
+
+		.bg-2{ 
+			background-color: #FFFFFF;
+			color:#000000;
+		}
+
+		.bg-3{ 
+			background-color: #CCCCCC;
+			color:#000000;
+		}
+
+
+		.container {
+			height: 100%; width:100%; padding-bottom:0%; 
+			padding-left: 20%; padding-right: 20%;
+  			font-family: 'Source Sans Pro', Helvetica, sans-serif;
+  			background-color: #EEEEEE;
+		}
+
+		.jumbotron {
+			margin-top : 0%;
+			padding-top : 2.5%;
+			background-color:#CCCCCC;
+			color:#000000
+		}
+
+		.col-sm-6 {
+			text-align: center;
+			padding-left: 10%;
+			padding-right: 10%;
+		}
+		body {
+			background-color: #EEEEEE;
+		}
+		</style>
+
+	</head>
+	<script>
+				
+				//Yahoo Finance API to get exchange rate, feeds into parseExchangeRate()
+				function getRate(from, to) {
+
+					if (from == to)
+					{
+						window.rate = 1;
+					}
+
+				    var script = document.createElement('script');
+				    script.setAttribute('src', "http://query.yahooapis.com/v1/public/yql?q=select%20rate%2Cname%20from%20csv%20where%20url%3D'http%3A%2F%2Fdownload.finance.yahoo.com%2Fd%2Fquotes%3Fs%3D"+from+to+"%253DX%26f%3Dl1n'%20and%20columns%3D'rate%2Cname'&format=json&callback=parseExchangeRate");
+				    document.body.appendChild(script);
+				}
+				
+
+
+				//parse the Yahoo API object, saves it in global var
+				function parseExchangeRate(data) {
+				    window.rate = parseFloat(data.query.results.row.rate, 10);
+				    document.getElementById("conversionRate").innerHTML=parseFloat(data.query.results.row.rate, 10);
+				}
+			 	
+
+
+
+			 	//the exchange rate is calculated every time a selection is made in the drop-down box
+			 	function changeRate() {
+					
+					//read in the element values
+					var convertFrom = document.getElementById("convertFrom").value;
+					var convertTo = document.getElementById("convertTo").value;
+
+					//get thhe exchange rate
+					getRate(convertFrom,convertTo);
+				}
+				
+
+
+				//called whenever "Convert Money" button is pressed 
+				//checks for valid input and then
+				function convertMoney() {
+
+					
+					//read in the element values
+					var inMoney = document.getElementById("inMoney").value;
+					
+
+					if(!inMoney || inMoney < 0)
+					{	
+						document.getElementById("finalAmount").innerHTML = "Please insert a valid number." ;
+						return;
+					}
+
+
+					//get the exchange rate;
+					var rate = window.rate;
+
+					var outMoney = Math.round(rate*inMoney*100)/100;
+					var display = outMoney + " " + document.getElementById("convertTo").value;
+					document.getElementById("finalAmount").innerHTML = display;
+
+				}
+
+				//fade in on loadup
+				$(document).ready(function(){
+					$("html").hide();
+				    setTimeout( function(){
+				        $('html').fadeIn(1000);
+				    } , 1000);
+				});
+
+
+
+	</script>
+
+	<body>
+		<div class="enter jumbotron text-center"> 
+				<h1>Currency Converter</h1> 
+			</div>
+		<div class="container">
+
+			
+			
+			<div class= "row">
+
+				<div class="col-sm-6">
+					
+					<h2>Insert Amount:</h2>
+
+					<br> 
+					<input class = "form-group" type="number" min="0" step = "0.01" name="inMoney" id="inMoney"/>
+					<br>
+					
+					<span>Convert from:</span> <br> 
+					<select id = "convertFrom" onclick="changeRate()">
+						<option value = "USD">USD - US Dollar</option>
+						<option value = "CAD">CAD - Canadian Dollar</option>
+						<option value = "EUR">EUR - Euro</option>
+						<option value = "GBP">GBP - British Pound</option>
+						<option value = "AUD">AUD - Australian Dollar</option>
+						<option value = "SGD">SGD - Singapore Dollar</option>	
+						<option value = "JPY">JPY - Japanese Yen</option>
+						<option value = "SEK">SEK - Sweden Krona</option>
+						<option value = "SGD">SGD - Singapore Dollar</option>
+						<option value = "BGN">BGN - Bulgaria Lev</option>
+						<option value = "DKK">DKK - Denmark Krone</option>
+						<option value = "CZK">CZK - Czech Republic Koruna</option>
+						<option value = "HUF">HUF- Hungary Forint</option>	
+						<option value = "CHF">CHF - Swiss Franc</option>
+
+
+
+					</select>
+					<br>
+					<br>
+
+					<span>To: </span><br>
+						<select id = "convertTo" onclick="changeRate()">
+						<option value = "CAD">CAD - Canadian Dollar</option>
+						<option value = "USD">USD - US Dollar</option>
+						<option value = "EUR">EUR - Euro</option>
+						<option value = "GBP">GBP - British Pound</option>
+						<option value = "AUD">AUD - Australian Dollar</option>
+						<option value = "SGD" >SGD - Singapore Dollar</option>		
+						<option value = "JPY">JPY - Japanese Yen</option>
+						<option value = "SEK">SEK - Sweden Krona</option>
+						<option value = "SGD">SGD - Singapore Dollar</option>
+						<option value = "BGN">BGN - Bulgaria Lev</option>
+						<option value = "DKK">DKK - Denmark Krone</option>
+						<option value = "CZK">CZK - Czech Republic Koruna</option>
+						<option value = "HUF">HUF- Hungary Forint</option>	
+						<option value = "CHF">CHF - Swiss Franc</option>
+					</select>
+					<br>
+					<br>
+
+					<button class = "btn-default btn-lg" onclick = "convertMoney()">Convert the Money!</button> <br>
+
+				</div>
+				
+
+				<div class="col-sm-6">
+					
+						<h3>Conversion Rate:</h3>
+						<h3 id = "conversionRate">
+						<br>
+						<h3>Converted Value:</h3>
+						<h3 id = "finalAmount"></h2>
+				</div>
+
+			</div>
+
+
+			<script>
+			
+				//get starting exchange rate
+				changeRate("USD","CAD");	
+
+			</script>
+
+
+		</div>
+	</body>
+</html>
+
